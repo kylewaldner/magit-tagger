@@ -49,24 +49,6 @@ Then provide the recipe when prompted:
    (require 'magit-tagger)
    ```
 
-### Manualy Installation from local
-
-**With straight.el (local path):**
-```elisp
-(use-package magit-tagger
-  :straight (:local-repo "/path/to/magit-tagger")
-  :after magit)
-```
-
-**Without straight.el:**
-```elisp
-(use-package magit-tagger
-  :load-path "/path/to/magit-tagger"
-  :after magit
-  :config
-  (magit-tagger-setup))
-```
-
 ## Usage
 
 ### Quick Start
