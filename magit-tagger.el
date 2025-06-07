@@ -249,6 +249,10 @@ If PUSH is non-nil, push the tag to remote."
              (magit-read-remote "Push tags to remote")
            "origin")))
 
+  ;; Default to "origin" if remote is nil
+  (unless remote
+    (setq remote "origin"))
+
   (let ((result (magit-tagger--run-git-command
                  (list "push" remote "--tags"))))
     (if (car result)
@@ -315,7 +319,10 @@ If PUSH is non-nil, push the tag to remote."
     (transient-remove-suffix 'magit-dispatch magit-tagger-key))
   ;; Add the binding with the current key
   (transient-append-suffix 'magit-dispatch "t"
-    `(,magit-tagger-key "Enhanced Tagging" magit-tagger)))
+    `(,magit-tagger-key "Enhanced Tagging" magit-tagger))
+  ;; Also bind directly in magit-mode-map to override the default M-t
+  (when (boundp 'magit-mode-map)
+    (define-key magit-mode-map (kbd magit-tagger-key) 'magit-tagger)))
 
 ;;;###autoload
 (defun magit-tagger-change-key (new-key)
