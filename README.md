@@ -14,7 +14,30 @@ Enhanced git tag management for Magit - an Emacs extension that provides advance
 
 ## Installation
 
-### Manual Installation
+### Using straight.el (Recommended)
+
+**Declarative (in your config):**
+```elisp
+(straight-use-package '(magit-tagger :type git :host github :repo "kylewaldner/magit-tagger"))
+```
+
+**Interactive (manual install):**
+```
+M-x straight-use-package RET magit-tagger RET
+```
+Then provide the recipe when prompted:
+```
+(:type git :host github :repo "kylewaldner/magit-tagger")
+```
+
+**With use-package:**
+```elisp
+(use-package magit-tagger
+  :straight (:type git :host github :repo "kylewaldner/magit-tagger")
+  :after magit)
+```
+
+### Manual Installation via git
 
 1. Clone this repository or download `magit-tagger.el`
 2. Add the directory to your Emacs load path:
@@ -26,8 +49,16 @@ Enhanced git tag management for Magit - an Emacs extension that provides advance
    (require 'magit-tagger)
    ```
 
-### Using use-package
+### Manualy Installation from local
 
+**With straight.el (local path):**
+```elisp
+(use-package magit-tagger
+  :straight (:local-repo "/path/to/magit-tagger")
+  :after magit)
+```
+
+**Without straight.el:**
 ```elisp
 (use-package magit-tagger
   :load-path "/path/to/magit-tagger"
