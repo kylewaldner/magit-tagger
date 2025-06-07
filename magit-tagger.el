@@ -64,6 +64,16 @@
   :type 'boolean
   :group 'magit-tagger)
 
+(defcustom magit-tagger-key "M-t"
+  "Key binding for magit-tagger in magit-dispatch.
+This should be a key sequence string as understood by `kbd'.
+Common choices: \"M-t\", \"C-c t\", \"T\", etc.
+
+After changing this value, you may need to restart Emacs or
+call `magit-tagger-setup' to apply the new binding."
+  :type 'key-sequence
+  :group 'magit-tagger)
+
 ;;; Utility Functions
 
 (defun magit-tagger--run-git-command (args &optional default-directory)
@@ -172,7 +182,7 @@ If PUSH is non-nil, push the tag to remote."
   "Show detailed information about TAG-NAME."
   (interactive
    (list (magit-completing-read "Show info for tag"
-                                (magit-list-tags)
+                                (magit-git-lines "tag" "-l")
                                 nil t nil nil
                                 (magit-tagger--get-latest-tag))))
   (let ((buffer-name (format "*magit-tagger: %s*" tag-name)))
@@ -209,7 +219,7 @@ If PUSH is non-nil, push the tag to remote."
   "Delete TAG-NAME locally and optionally from REMOTE."
   (interactive
    (let* ((tag-name (magit-completing-read "Delete tag"
-                                           (magit-list-tags)
+                                           (magit-git-lines "tag" "-l")
                                            nil t))
           (remote (when (y-or-n-p "Also delete from remote? ")
                     (magit-read-remote "Delete from remote"))))
@@ -277,7 +287,7 @@ If PUSH is non-nil, push the tag to remote."
    ("d" "Delete tag" magit-tagger-delete-tag)
    ("P" "Push tags" magit-tagger-push-tags)]
   ["Quick Actions"
-   ("l" "List all tags" magit-list-tags)
+   ("l" "List all tags" magit-show-refs)
    ("r" "Refresh" magit-refresh)])
 
 (defun magit-tagger-create-patch-tag ()
@@ -300,8 +310,22 @@ If PUSH is non-nil, push the tag to remote."
 ;;;###autoload
 (defun magit-tagger-setup ()
   "Set up magit-tagger integration with Magit."
+  ;; Remove any existing binding first to avoid conflicts
+  (ignore-errors
+    (transient-remove-suffix 'magit-dispatch magit-tagger-key))
+  ;; Add the binding with the current key
   (transient-append-suffix 'magit-dispatch "t"
-    '("T" "Enhanced Tagging" magit-tagger)))
+    `(,magit-tagger-key "Enhanced Tagging" magit-tagger)))
+
+;;;###autoload
+(defun magit-tagger-change-key (new-key)
+  "Change the magit-tagger key binding to NEW-KEY.
+This is a convenience function for interactive key changes."
+  (interactive "sNew key for magit-tagger: ")
+  (customize-set-variable 'magit-tagger-key new-key)
+  (when (featurep 'magit)
+    (magit-tagger-setup))
+  (message "magit-tagger key changed to %s" new-key))
 
 ;;;###autoload
 (with-eval-after-load 'magit

@@ -54,7 +54,7 @@ Then provide the recipe when prompted:
 ### Quick Start
 
 1. In any git repository, open Magit (`M-x magit-status`)
-2. Press `T` to open the enhanced tagging interface
+2. Press `M-t` to open the enhanced tagging interface
 3. Choose from the available options:
    - `p` - Create patch version (e.g., v1.0.0 → v1.0.1)
    - `m` - Create minor version (e.g., v1.0.0 → v1.1.0)
@@ -75,19 +75,19 @@ The plugin automatically:
 
 ### Example Workflow
 
-1. **Create a patch version**: Press `T` then `p`
+1. **Create a patch version**: Press `M-t` then `p`
    - Plugin suggests next patch version (e.g., v1.2.4)
    - Enter tag description
    - Choose whether to push to remote
    - View tag details automatically
 
-2. **Create a custom tag**: Press `T` then `c`
+2. **Create a custom tag**: Press `M-t` then `c`
    - Enter custom tag name (v-prefix added automatically)
    - Enter description
    - Validation ensures proper format
    - Option to push to remote
 
-3. **View tag information**: Press `T` then `s`
+3. **View tag information**: Press `M-t` then `s`
    - Select tag from completion list
    - View detailed tag information
    - See recent commits in context
@@ -97,6 +97,11 @@ The plugin automatically:
 ### Customization Options
 
 ```elisp
+;; Customize the key binding (default: "M-t")
+(setq magit-tagger-key "T")          ; Use "T" instead of "M-t"
+;; or
+(setq magit-tagger-key "C-c t")      ; Use "C-c t"
+
 ;; Set default increment type
 (setq magit-tagger-default-increment-type 'patch) ; 'patch, 'minor, or 'major
 
@@ -107,11 +112,28 @@ The plugin automatically:
 (setq magit-tagger-show-tag-info-after-creation t)
 ```
 
+**Note**: When using `use-package`, set the key binding before loading:
+
+```elisp
+(use-package magit-tagger
+  :straight (:type git :host github :repo "kylewaldner/magit-tagger")
+  :after magit
+  :custom
+  (magit-tagger-key "T")  ; Set your preferred key
+  (magit-tagger-default-increment-type 'patch))
+```
+
+You can also change the key binding interactively:
+- `M-x magit-tagger-change-key` - Change the key binding at runtime
+- `M-x customize-group RET magit-tagger RET` - Access all customization options
+
 ### Key Bindings
 
 The plugin integrates with Magit's transient system. Access it via:
 - `M-x magit-tagger` - Direct access to tagging interface
-- In Magit status buffer: `T` - Enhanced tagging menu
+- In Magit status buffer: `M-t` (default) - Enhanced tagging menu
+
+**Note**: The key binding is customizable via `magit-tagger-key`. See [Customization Options](#customization-options) above.
 
 ## Comparison with Python Script
 
